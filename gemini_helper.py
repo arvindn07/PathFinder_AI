@@ -22,7 +22,7 @@ API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 if GENAI_AVAILABLE and API_KEY:
     genai.configure(api_key=API_KEY)
-    _model = genai.GenerativeModel("gemini-2.0-flash")
+    _model = genai.GenerativeModel("gemini-3.6-flash")
 else:
     _model = None
 
