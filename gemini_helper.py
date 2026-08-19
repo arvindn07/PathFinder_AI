@@ -1,15 +1,3 @@
-"""
-gemini_helper.py
-
-Wraps calls to the Gemini API. Used ONLY for generating human-friendly
-explanations and resource suggestions for a topic that the graph has
-ALREADY placed in the correct order. Gemini never decides ordering.
-
-Requires: pip install google-generativeai
-Set your API key as an environment variable: GEMINI_API_KEY
-(Get one free from https://aistudio.google.com/app/apikey)
-"""
-
 import os
 
 try:
