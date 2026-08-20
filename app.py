@@ -3,7 +3,7 @@ from topic_graph import get_personalized_path, get_topic_title, validate_graph, 
 from quiz import QUIZ_QUESTIONS, score_quiz
 from gemini_helper import get_topic_explanation
 
-st.set_page_config(page_title="PathFinder AI", page_icon="🧭", layout="centered")
+st.set_page_config(page_title="FromZero", page_icon="🧭", layout="centered")
 
 # Validate graph once at startup
 validate_graph()
@@ -24,7 +24,7 @@ if "completed" not in st.session_state:
 if "topic_content_cache" not in st.session_state:
     st.session_state.topic_content_cache = {}
 
-st.title("🧭 PathFinder AI")
+st.title("🧭 FromZero")
 st.caption("For people who have a goal but don't know the path to get there.")
 
 # ---------------------------------------------------------------------------
