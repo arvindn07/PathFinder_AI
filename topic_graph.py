@@ -125,6 +125,30 @@ def get_topic_title(topic_id: str) -> str:
     return TOPIC_GRAPH.get(topic_id, {}).get("title", topic_id)
 
 
+def build_path_diagram(ordered_topic_ids: list):
+    """
+    Builds a Graphviz Digraph showing the given topics as boxes connected
+    by arrows in learning order (top to bottom). Returns a graphviz.Digraph
+    object that Streamlit can render directly with st.graphviz_chart().
+    """
+    import graphviz
+
+    dot = graphviz.Digraph()
+    dot.attr(rankdir="TB", bgcolor="transparent")
+    dot.attr("node", shape="box", style="rounded,filled", fillcolor="#EAF2FF",
+              color="#4A7FE8", fontname="Helvetica", fontsize="11", margin="0.2,0.12")
+    dot.attr("edge", color="#4A7FE8", arrowsize="0.7")
+
+    for i, topic_id in enumerate(ordered_topic_ids, 1):
+        label = f"{i}. {get_topic_title(topic_id)}"
+        dot.node(topic_id, label)
+
+    for a, b in zip(ordered_topic_ids, ordered_topic_ids[1:]):
+        dot.edge(a, b)
+
+    return dot
+
+
 def validate_graph():
     """Sanity check: every prereq referenced must exist as a topic key."""
     all_ids = set(TOPIC_GRAPH.keys())

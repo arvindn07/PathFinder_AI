@@ -11,7 +11,7 @@ Flow:
 """
 
 import streamlit as st
-from topic_graph import get_personalized_path, get_topic_title, validate_graph
+from topic_graph import get_personalized_path, get_topic_title, validate_graph, build_path_diagram
 from quiz import QUIZ_QUESTIONS, score_quiz
 from gemini_helper import get_topic_explanation
 
@@ -24,7 +24,7 @@ validate_graph()
 # Session state setup
 # ---------------------------------------------------------------------------
 if "stage" not in st.session_state:
-    st.session_state.stage = "goal"          # goal -> quiz -> path
+    st.session_state.stage = "goal"          # goal -> quiz -> path_overview -> learn
 if "goal" not in st.session_state:
     st.session_state.goal = ""
 if "known_topics" not in st.session_state:
@@ -77,13 +77,13 @@ elif st.session_state.stage == "quiz":
             known = score_quiz(user_answers)
             st.session_state.known_topics = known
             st.session_state.path = get_personalized_path(known)
-            st.session_state.stage = "path"
+            st.session_state.stage = "path_overview"
             st.rerun()
 
 # ---------------------------------------------------------------------------
-# STAGE 3: Personalized path
+# STAGE 3: Path overview (whole roadmap at a glance, before committing to learn)
 # ---------------------------------------------------------------------------
-elif st.session_state.stage == "path":
+elif st.session_state.stage == "path_overview":
     st.subheader(f"Your Path: {st.session_state.goal}")
 
     known_count = len(st.session_state.known_topics)
@@ -92,6 +92,34 @@ elif st.session_state.stage == "path":
             f"Nice — the quiz shows you already know {known_count} topic(s). "
             f"We've skipped those for you."
         )
+
+    st.caption("Here's the full roadmap to reach your goal, in order.")
+    st.divider()
+
+    if st.session_state.path:
+        diagram = build_path_diagram(st.session_state.path)
+        st.graphviz_chart(diagram, use_container_width=True)
+    else:
+        st.info("You already know everything on this path! 🎉")
+
+    st.divider()
+
+    col1, col2 = st.columns([0.5, 0.5])
+    with col1:
+        if st.button("📚 Learn Here", type="primary", use_container_width=True):
+            st.session_state.stage = "learn"
+            st.rerun()
+    with col2:
+        if st.button("🔄 Start Over", use_container_width=True):
+            for key in ["stage", "goal", "known_topics", "path", "completed", "topic_content_cache"]:
+                del st.session_state[key]
+            st.rerun()
+
+# ---------------------------------------------------------------------------
+# STAGE 4: Learn Here — interactive path with explanations, resources, progress
+# ---------------------------------------------------------------------------
+elif st.session_state.stage == "learn":
+    st.subheader(f"Learning: {st.session_state.goal}")
 
     total = len(st.session_state.path)
     done = len(st.session_state.completed)
