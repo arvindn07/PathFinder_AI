@@ -1,15 +1,3 @@
-"""
-PathFinder AI - Personalized Learning Path Generator
-Streamlit prototype
-
-Flow:
-1. Goal input screen
-2. Diagnostic quiz (maps directly to knowledge-graph topic nodes)
-3. Personalized, topologically-sorted learning path with AI-generated
-   explanations/resources per topic
-4. Progress tracking
-"""
-
 import streamlit as st
 from topic_graph import get_personalized_path, get_topic_title, validate_graph, build_path_diagram
 from quiz import QUIZ_QUESTIONS, score_quiz
